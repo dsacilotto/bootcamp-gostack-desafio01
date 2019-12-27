@@ -8,9 +8,6 @@ let requestCount = 0;
 
 /**
  * Middleware to log total of requests
- * @param {*} req
- * @param {*} res
- * @param {*} next
  */
 function logRequest(req, res, next) {
   ++requestCount;
@@ -26,11 +23,8 @@ server.use(logRequest);
 
 /**
  * Middleware to check if a project exists
- * @param {*} req
- * @param {*} res
- * @param {*} next
  */
-function checkIfProjectExixts(req, res, next) {
+function checkIfProjectExists(req, res, next) {
   const { id } = req.params;
 
   const index = projects.findIndex((p) => p.id === id);
@@ -43,12 +37,15 @@ function checkIfProjectExixts(req, res, next) {
 }
 
 /**
- * Projects endpoints
+ * Project's endpoints
  */
+
+// Return all projects
 server.get('/projects', (req, res) => {
   return res.status(200).json(projects);
 });
 
+// Register a new project
 server.post('/projects', (req, res) => {
   const { id } = req.body;
   const { title } = req.body;
@@ -64,7 +61,8 @@ server.post('/projects', (req, res) => {
   return res.status(201).json(project);
 });
 
-server.put('/projects/:id', checkIfProjectExixts, (req, res) => {
+// Update a project by id
+server.put('/projects/:id', checkIfProjectExists, (req, res) => {
   const { title } = req.body;
   const index = req.index;
 
@@ -74,7 +72,8 @@ server.put('/projects/:id', checkIfProjectExixts, (req, res) => {
   return res.status(200).json(project);
 });
 
-server.delete('/projects/:id', checkIfProjectExixts, (req, res) => {
+// Delete a project by id
+server.delete('/projects/:id', checkIfProjectExists, (req, res) => {
   const index = req.index;
 
   projects.splice(index, 1);
@@ -85,7 +84,9 @@ server.delete('/projects/:id', checkIfProjectExixts, (req, res) => {
 /**
  * Tasks endpoints
  */
-server.put('/projects/:id/tasks', checkIfProjectExixts, (req, res) => {
+
+// Add a new task in a project passing id
+server.put('/projects/:id/tasks', checkIfProjectExists, (req, res) => {
   const { title } = req.body;
   const index = req.index;
   const project = projects[index];
